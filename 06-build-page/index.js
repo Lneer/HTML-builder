@@ -13,22 +13,19 @@ const folderCreate = async() => {
 
 const indexCreate = async() =>{
   let indexBuffer =  await fs.promises.readFile(templatePath).catch((err => console.log(err)));
-  let header = await fs.promises.readFile(path.join(componentsPath, 'header.html')).catch((err => console.log(err)));
-  let articles = await fs.promises.readFile(path.join(componentsPath, 'articles.html')).catch((err => console.log(err)));
-  let footer = await fs.promises.readFile(path.join(componentsPath, 'footer.html')).catch((err => console.log(err)));
-  
   indexBuffer = indexBuffer.toString();
-  const componentsArr =[footer,header,articles];
-  const replaceArr= ['{{footer}}','{{header}}', '{{articles}}'];
+  const regexp = /{{\w+}}/g;
+  let replaceArr = indexBuffer.match(regexp);
 
-  componentsArr.forEach(elem =>elem.toString());
+  for(let i= 0; i < replaceArr.length; i++){
+    let parseElem = replaceArr[i].replace(/\W+/g,'');
+    let data = await fs.promises.readFile(path.join(componentsPath,`${parseElem}.html`)).catch((err => console.log(err)));
+    data = data.toString();
+    indexBuffer = indexBuffer.replace(replaceArr[i],data);
+  }
+  
+  fs.promises.writeFile(path.join(targetPath,'index.html'), indexBuffer);
 
-  replaceArr.forEach((elem,i) => {
-    if(indexBuffer.includes(elem)){
-      indexBuffer = indexBuffer.replace(elem,componentsArr[i]);
-    }
-  });
-  fs.promises.writeFile(path.join(targetPath,'index.html'), indexBuffer).catch((err => console.log(err)));
 };
 const copyDir =  async(sourcePath, targetPath) =>{
   fs.promises.rm(targetPath,{force:true, recursive: true})
@@ -56,17 +53,18 @@ const mergeCss = async(sourcePath,targetPath) => {
     }
   });
   let bundlecss ='';
-  cssFiles.forEach((elem) =>{
+  cssFiles.forEach((elem, i) =>{
     const readStream = fs.createReadStream(path.join(sourcePath,elem));
     readStream.on('data', (chunk) => {
-      bundlecss +=chunk.toString(); 
-    });
-    readStream.on('end', () => {
-      writeStream.write(bundlecss);
+      bundlecss += chunk.toString(); 
+      bundlecss += '\n';
+      if(i === cssFiles.length-1){
+        writeStream.write(bundlecss);}
     });
   });
   
 };
+
 folderCreate();
 indexCreate();
 copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));

@@ -15,44 +15,16 @@ const mergeCss = async(sourcePath,targetPath) => {
     }
   });
   let bundlecss ='';
-  cssFiles.forEach((elem) =>{
+  cssFiles.forEach((elem, i) =>{
     const readStream = fs.createReadStream(path.join(sourcePath,elem));
     readStream.on('data', (chunk) => {
-      bundlecss +=chunk.toString(); 
-    });
-    readStream.on('end', () => {
-      writeStream.write(bundlecss);
+      bundlecss += chunk.toString(); 
+      bundlecss += '\n';
+      if(i === cssFiles.length-1){
+        writeStream.write(bundlecss);}
     });
   });
   
 };
 
 mergeCss(from,to);
-
-
-
-// let bundlecss = '';
-
-
-
-// fs.promises.readdir(sourcePath, {withFileTypes:true})
-//   .then((fileList) => {
-//     let cssFiles=[];
-//     fileList.forEach((elem) => {
-//       if(elem.isFile() && path.extname(elem.name) ==='.css'){
-//         cssFiles.push(elem.name);
-//       }
-//     });
-//     return cssFiles;
-//   })
-//   .then((cssFiles) => {
-//     cssFiles.forEach((elem) =>{
-//       const readStream = fs.createReadStream(path.join(sourcePath,elem));
-//       readStream.on('data', (chunk) => {
-//         bundlecss +=chunk.toString(); 
-//       });
-//       readStream.on('end', () => {
-//         writeStream.write(bundlecss);
-//       });
-//     });
-//   });

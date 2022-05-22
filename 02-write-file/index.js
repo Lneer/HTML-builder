@@ -7,6 +7,7 @@ const writeSteam = fs.createWriteStream(targetPath);
 const rl = readLine.createInterface(
   {
     input: process.stdin,
+    output: process.stdout,
   });
 
 const writeEnd = () => {
