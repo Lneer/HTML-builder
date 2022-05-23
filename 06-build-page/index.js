@@ -7,8 +7,8 @@ const templatePath = path.join(__dirname, 'template.html');
 const targetPath= path.join(__dirname,'project-dist');
 
 const folderCreate = async() => {
-  fs.promises.rm(targetPath,{force:true, recursive: true})
-    .then(() =>fs.promises.mkdir(targetPath));
+  fs.promises.mkdir(targetPath, {recursive: true})
+    .catch((err) => console.log(err));
   
 };
 
@@ -42,7 +42,7 @@ const copyDir =  async(sourcePath, targetPath) =>{
         copyDir(path.join(sourcePath, elem.name) ,path.join(targetPath, elem.name));
       }
     }))
-    .catch((err) => {throw new Error(err);});
+    .catch((err) => console.log(err));
 };
 
 const mergeCss = async(sourcePath,targetPath) => {
