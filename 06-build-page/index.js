@@ -68,8 +68,9 @@ const mergeCss = async(sourcePath,targetPath) => {
 };
 
 folderCreate()
-  .then(async()=>{
-    await indexCreate();
-    await copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));
-    await mergeCss(path.join(sourcePath, 'styles'), targetPath);
-  });
+  .then(() => indexCreate())
+  .then(() => copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets')))
+  .then(() => mergeCss(path.join(sourcePath, 'styles'), targetPath))
+  .catch((err) => {{throw new Error(err);}});
+    
+ 
