@@ -7,7 +7,9 @@ const templatePath = path.join(__dirname, 'template.html');
 const targetPath= path.join(__dirname,'project-dist');
 
 const folderCreate = async() => {
-  await fs.promises.mkdir(targetPath,{recursive:true});
+  fs.promises.rm(targetPath,{force:true, recursive: true})
+    .then(() =>fs.promises.mkdir(targetPath));
+  
 };
 
 
@@ -66,8 +68,8 @@ const mergeCss = async(sourcePath,targetPath) => {
 };
 
 folderCreate()
-  .then(()=>{
-    indexCreate();
-    copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));
-    mergeCss(path.join(sourcePath, 'styles'), targetPath);
+  .then(async()=>{
+    await indexCreate();
+    await copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));
+    await mergeCss(path.join(sourcePath, 'styles'), targetPath);
   });
