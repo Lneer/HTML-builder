@@ -31,7 +31,7 @@ const indexCreate = async() =>{
 };
 const copyDir =  async(sourcePath, targetPath) =>{
   fs.promises.rm(targetPath,{force:true, recursive: true})
-    .then(() => fs.promises.mkdir(targetPath))
+    .then(() => fs.promises.mkdir(targetPath, {recursive: true}))
     .then(() => fs.promises.readdir(sourcePath,{withFileTypes:true}))
     .then((fileList) => fileList.forEach(elem => {
       if (elem.isFile()){
