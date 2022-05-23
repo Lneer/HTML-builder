@@ -65,7 +65,9 @@ const mergeCss = async(sourcePath,targetPath) => {
   
 };
 
-folderCreate();
-indexCreate();
-copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));
-mergeCss(path.join(sourcePath, 'styles'), targetPath);
+folderCreate()
+  .then(()=>{
+    indexCreate();
+    copyDir(path.join(sourcePath, 'assets'), path.join(targetPath, 'assets'));
+    mergeCss(path.join(sourcePath, 'styles'), targetPath);
+  });
